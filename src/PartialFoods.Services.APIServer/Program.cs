@@ -19,14 +19,8 @@ namespace PartialFoods.Services.APIServer
 
         public static IWebHost BuildWebHost(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
-             .UseUrls("http://*:5000")
-             .PreferHostingUrls(true)
-             .ConfigureLogging((hostingContext, logging) =>
-            {
-                logging.AddConfiguration(hostingContext.Configuration.GetSection("Logging"));
-                logging.AddConsole();
-                logging.AddDebug();
-            })
+            .UseUrls("http://*:5000")
+            .PreferHostingUrls(true)
             .UseStartup<Startup>()
             .Build();
     }

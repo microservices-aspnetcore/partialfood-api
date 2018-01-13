@@ -15,25 +15,34 @@ namespace PartialFoods.Services.APIServer
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        private ILogger logger;
+
+        public Startup(IConfiguration configuration, ILogger<Startup> logger)
         {
             Configuration = configuration;
+            this.logger = logger;
         }
 
         public IConfiguration Configuration { get; }
 
+
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            Console.WriteLine("CONFIGURE SERVICES CALLED");
             // TODO: make these channels DNS-disco-friendly
-            Channel channel = new Channel("127.0.0.1:3000", ChannelCredentials.Insecure);
-            var client = new OrderCommand.OrderCommandClient(channel);
+            Channel cmdChannel = new Channel(Configuration["rpcclient:ordercommand"], ChannelCredentials.Insecure);
+            var client = new OrderCommand.OrderCommandClient(cmdChannel);
 
-            Channel invChannel = new Channel("127.0.0.1:3002", ChannelCredentials.Insecure);
+            Channel invChannel = new Channel(Configuration["rpcclient:inventory"], ChannelCredentials.Insecure);
             var invClient = new InventoryManagement.InventoryManagementClient(invChannel);
 
-            Channel orderChannel = new Channel("127.0.0.1:3001", ChannelCredentials.Insecure);
+            Channel orderChannel = new Channel(Configuration["rpcclient:ordermanagement"], ChannelCredentials.Insecure);
             var orderClient = new OrderManagement.OrderManagementClient(orderChannel);
+
+            logger.LogInformation($"Order Command Client: {cmdChannel.ResolvedTarget}");
+            logger.LogInformation($"Order Management Client: {orderChannel.ResolvedTarget}");
+            logger.LogInformation($"Inventory Client: {invChannel.ResolvedTarget}");
 
             services.AddSingleton(typeof(OrderCommand.OrderCommandClient), client);
             services.AddSingleton(typeof(InventoryManagement.InventoryManagementClient), invClient);
