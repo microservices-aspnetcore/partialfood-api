@@ -1,0 +1,18 @@
+{
+    "tax_rate": 1,
+    "user_id": "kevin",
+    "line_items": [
+        {
+            "sku": "CHEESE1",
+            "quantity": 12
+        },
+        {
+            "sku": "MEAT12",
+            "quantity": 1
+        },
+        {
+            "sku": "CRACKERS05",
+            "quantity": 1
+        }
+    ]
+}
